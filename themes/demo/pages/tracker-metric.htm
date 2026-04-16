@@ -1,0 +1,83 @@
+title = "tracker metric"
+url = "/tracker/:category_slug/:metric_slug"
+layout = "default"
+is_hidden = 0
+==
+<?php
+function onStart() {
+    
+    $categorySlug = $this->param('category_slug');
+    
+    $this['category'] = \Nurmukhan\Tracker\Models\Category::where('slug', $categorySlug)->first();
+    
+    $slug = $this->param('metric_slug');
+    
+    $this['metric'] = \Nurmukhan\Tracker\Models\Metric::where('id', $slug)->first();
+    
+    if (!$this['metric']) return Redirect::to('404');
+
+    $this['todayLogs'] = $this['metric']->logs()
+        ->whereDate('recorded_at', date('Y-m-d'))
+        ->orderBy('recorded_at', 'desc')
+        ->get();
+}
+function onQuickLog() {
+    $value = post('value');
+    $metricId = post('metric_id');
+
+    \Nurmukhan\Tracker\Models\Log::create([
+        'metric_id' => $metricId,
+        'value'     => $value,
+        'recorded_at' => now()
+    ]);
+
+    \Flash::success('Logged ' . $value);
+    return Redirect::refresh();
+}
+?>
+==
+<div class="container mt-4">
+    <h2 class="text-center">{{ metric.name }} / {{ category.name }}</h2>
+    <div class="card shadow-sm p-4 mb-4">
+        
+        <h1 class="display-1 text-primary text-center" id="sliderValue">5</h1>
+        
+        <input type="range" 
+               class="custom-range" 
+               min="1" 
+               max="10" 
+               step="1" 
+               value="5" 
+               id="metricSlider"
+               style="height: 3rem;">
+
+        <button class="btn btn-primary btn-lg btn-block mt-4" 
+                id="logButton"
+                data-request="onQuickLog"
+                data-request-data="metric_id: {{ metric.id }}">
+            log
+        </button>
+    </div>
+    <h4>today's logs</h4>
+    <div class="list-group">
+        {% for log in todayLogs %}
+            <div class="list-group-item d-flex justify-content-between">
+                <strong>{{ log.value }}</strong>
+                <span class="text-muted small">{{ log.recorded_at|date('H:i', "Asia/Oral") }}</span>
+            </div>
+        {% else %}
+            <p class="text-center text-muted">Nothing logged yet for today.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('metricSlider');
+    const output = document.getElementById('sliderValue');
+    const logBtn = document.getElementById('logButton');
+
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+        logBtn.setAttribute('data-request-data', `value: ${this.value}, metric_id: {{ metric.id }}`);
+    };
+</script>

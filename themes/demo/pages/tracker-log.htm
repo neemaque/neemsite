@@ -1,0 +1,26 @@
+title = "tracker category"
+url = "/tracker/:category_slug"
+layout = "default"
+is_hidden = 0
+==
+<?php
+function onStart() {
+    $slug = $this->param('category_slug');
+    
+    $this['category'] = \Nurmukhan\Tracker\Models\Category::where('slug', $slug)->first();
+    
+    if (!$this['category']) return Redirect::to('404');
+
+    $this['metrics'] = $this['category']->metrics;
+}
+?>
+==
+<h2>{{ category.name }} Tracker</h2>
+<div class="list-group">
+    {% for metric in metrics %}
+        <a href="/tracker/{{ category.slug }}/{{ metric.id }}" class="list-group-item">
+            {{ metric.name }}
+            <span class="pull-right">&rarr;</span>
+        </a>
+    {% endfor %}
+</div>

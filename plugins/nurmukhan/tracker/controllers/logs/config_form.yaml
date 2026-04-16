@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Log
+
+# Model Form Field configuration
+form: $/nurmukhan/tracker/models/log/fields.yaml
+
+# Model Class name
+modelClass: Nurmukhan\Tracker\Models\Log
+
+# Default redirect location
+defaultRedirect: nurmukhan/tracker/logs
+
+# Create page
+create:
+    title: backend::lang.form.create_title
+    redirect: nurmukhan/tracker/logs/update/:id
+    redirectClose: nurmukhan/tracker/logs
+
+# Update page
+update:
+    title: backend::lang.form.update_title
+    redirect: nurmukhan/tracker/logs
+    redirectClose: nurmukhan/tracker/logs
+
+# Preview page
+preview:
+    title: backend::lang.form.preview_title

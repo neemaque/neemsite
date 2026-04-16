@@ -1,0 +1,10 @@
+1.0.1: 'First version of Tracker'
+1.0.2:
+    - 'Created table nurmukhan_tracker_categories'
+    - builder_table_create_nurmukhan_tracker_categories.php
+1.0.3:
+    - 'Created table nurmukhan_tracker_metrics'
+    - builder_table_create_nurmukhan_tracker_metrics.php
+1.0.4:
+    - 'Created table nurmukhan_tracker_logs'
+    - builder_table_create_nurmukhan_tracker_logs.php

@@ -1,0 +1,21 @@
+columns:
+    id:
+        label: id
+        type: number
+    value:
+        label: value
+        type: number
+        searchable: true
+        sortable: true
+    recorded_at:
+        label: 'recorded at'
+        type: datetime
+        searchable: true
+        sortable: true
+    metric:
+        label: metric
+        type: text
+        searchable: true
+        sortable: true
+        relation: metric
+        valueFrom: name

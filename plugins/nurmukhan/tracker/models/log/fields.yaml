@@ -1,0 +1,10 @@
+fields:
+    value:
+        label: Value
+        span: auto
+        type: number
+    metric_id:
+        label: Metric
+        showSearch: true
+        span: auto
+        type: dropdown

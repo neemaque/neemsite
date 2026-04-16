@@ -1,0 +1,21 @@
+title = "tracker"
+url = "/tracker"
+layout = "default"
+is_hidden = 0
+==
+<?php
+function onStart() {
+    
+    $this['categories'] = \Nurmukhan\Tracker\Models\Category::all();
+}
+?>
+==
+<h2>Tracker</h2>
+<div class="list-group">
+    {% for category in categories %}
+        <a href="/tracker/{{ category.slug }}" class="list-group-item">
+            {{ category.name }}
+            <span class="pull-right">&rarr;</span>
+        </a>
+    {% endfor %}
+</div>
