@@ -43,7 +43,7 @@ class Metric extends Model
             ->get();
 
         return [
-            'label' => $this->name,
+            'label' => "(" . $this->category->name . ") " . $this->name ,
             'data' => $logs->map(function($log) {
                 return [
                     'x' => $log->recorded_at->toIso8601String(), 
