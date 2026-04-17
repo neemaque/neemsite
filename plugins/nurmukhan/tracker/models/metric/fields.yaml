@@ -8,3 +8,19 @@ fields:
         showSearch: true
         span: auto
         type: dropdown
+    max_value:
+        label: 'Max Value'
+        span: auto
+        type: number
+    step_value:
+        label: 'Step Value'
+        span: auto
+        type: number
+    color:
+        label: Colour
+        span: auto
+        type: text
+    is_cumulative:
+        label: Cumulative
+        span: auto
+        type: checkbox

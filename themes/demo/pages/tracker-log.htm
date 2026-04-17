@@ -12,15 +12,97 @@ function onStart() {
     if (!$this['category']) return Redirect::to('404');
 
     $this['metrics'] = $this['category']->metrics;
+
+    $metricIds = $this['metrics']->pluck('id');
+
+    $this['categoryLogs'] = \Nurmukhan\Tracker\Models\Log::whereIn('metric_id', $metricIds)
+        ->whereDate('recorded_at', date('Y-m-d'))
+        ->with('metric')
+        ->orderBy('recorded_at', 'desc')
+        ->get();
+}
+function onBulkLog() {
+    $metricsData = post('metrics');
+
+    if (!$metricsData) return;
+
+    foreach ($metricsData as $id => $value) {
+        $metric = \Nurmukhan\Tracker\Models\Metric::find($id);
+        if (!$metric) continue;
+        
+        if ($metric->is_cumulative) {
+            $existingLog = \Nurmukhan\Tracker\Models\Log::where('metric_id', $metric->id)
+                ->whereDate('recorded_at', date('Y-m-d'))
+                ->first();
+
+            if ($existingLog) {
+                $existingLog->value += $value;
+                $existingLog->save();
+                continue;
+            }
+        }
+
+
+        \Nurmukhan\Tracker\Models\Log::create([
+            'metric_id' => $metric->id,
+            'value'     => $value,
+            'recorded_at' => now()
+        ]);
+    }
+
+    \Flash::success('Morning routine saved!');
+    
+    return Redirect::refresh();
 }
 ?>
 ==
-<h2>{{ category.name }} Tracker</h2>
-<div class="list-group">
-    {% for metric in metrics %}
-        <a href="/tracker/{{ category.slug }}/{{ metric.id }}" class="list-group-item">
-            {{ metric.name }}
-            <span class="pull-right">&rarr;</span>
-        </a>
-    {% endfor %}
+<div class="container">
+    <h2>{{ category.name }} log</h2>
+
+    <form data-request="onBulkLog" data-request-flash>
+        <div>
+            {% for metric in metrics %}
+            <div>
+                <h2 class="text-center">{{ metric.name }}</h2>
+                <h3 class="display-1 text-primary text-center" id="val-{{ metric.id }}"> 0 </h3>
+                
+                <input type="range" 
+                       name="metrics[{{ metric.id }}]" 
+                       class="custom-range metric-slider" 
+                       min="0" 
+                       max="{{ metric.max_value|default(10) }}" 
+                       step="{{ metric.step_value|default(1) }}" 
+                       value="0"
+                       data-display-id="val-{{ metric.id }}"
+                       style="height: 4rem;">
+                       
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block shadow">
+            save
+        </button>
+    </form>
+    <h2>today's logs</h2>
+    <div class="list-group">
+        {% for log in categoryLogs %}
+            <div class="list-group-item">
+                <strong>{{ log.value }}</strong>
+                <p>{{log.metric.name}}</p>
+                <span class="text-muted small">{{ log.recorded_at|date('H:i', "Asia/Oral") }}</span>
+            </div>
+        {% else %}
+            <p class="text-center text-muted">nothing</p>
+        {% endfor %}
+    </div>
 </div>
+
+<script>
+    document.querySelectorAll('.metric-slider').forEach(slider => {
+        slider.oninput = function() {
+            const displayId = this.getAttribute('data-display-id');
+            document.getElementById(displayId).innerHTML = this.value;
+        };
+    });
+</script>

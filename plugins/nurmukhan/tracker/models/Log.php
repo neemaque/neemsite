@@ -42,4 +42,7 @@ class Log extends Model
         'value',
         'metric_id',
     ];
+    protected $dates = [
+        'recorded_at'
+    ];
 }

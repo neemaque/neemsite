@@ -12,7 +12,7 @@ columns:
         type: datetime
         searchable: true
         sortable: true
-    metric:
+    metric_id:
         label: metric
         type: text
         searchable: true

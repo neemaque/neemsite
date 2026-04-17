@@ -1,0 +1,46 @@
+title = "tracker graph"
+url = "/tracker-graph"
+layout = "default"
+is_hidden = 0
+
+<?php
+[TrackerGraphComponent]
+?>
+==
+<div class="container text-center">
+    <h3>Tracker Graph</h3>
+    <form data-request="{{ TrackerGraphComponent }}::onUpdateChart" 
+          data-request-success="renderChart(data.chartData)">
+        
+        <div>
+            <input type="date" name="start" value="{{ "now"|date_modify("-7 days")|date("Y-m-d") }}">
+            <input type="date" name="end" value="{{ "now"|date("Y-m-d") }}">
+            <button type="submit" class="btn-primary">Update</button>
+        </div>
+
+    </form>
+
+    <div style="height: 500px;"><canvas id="categoryChart"></canvas></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+<script>
+    let myChart;
+    function renderChart(chartData) {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        if (myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                scales: { x: { type: 'time', time: { unit: 'day' } } }
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderChart({{ chartData|raw }});
+    });
+</script>

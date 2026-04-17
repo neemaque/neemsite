@@ -28,5 +28,34 @@ class Category extends Model
     ];
     public $hasMany = ['metrics' => 'Nurmukhan\Tracker\Models\Metric'];
     
-    
+    public function getDailyLogCount($start, $end)
+    {
+        $logCounts = $this->metrics->first()->logs()
+            ->whereBetween('recorded_at', [$start . ' 00:00:00', $end . ' 23:59:59'])
+            ->selectRaw('DATE(recorded_at) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
+        $period = \Carbon\CarbonPeriod::create($start, $end);
+
+        $dataPoints = [];
+        foreach ($period as $date) {
+            $dateString = $date->format('Y-m-d');
+            
+            $dataPoints[] = [
+                'x' => $dateString,
+                'y' => $logCounts->get($dateString, 0)
+            ];
+        }
+
+        return [
+            'label' => $this->name . ' logs a day',
+            'data' => $dataPoints,
+            'backgroundColor' => $this->color,
+            'borderColor' => '#94a3b8',
+            'type' => 'bar',
+            'yAxisID' => 'y',
+            'order' => 1
+        ];
+    }
 }

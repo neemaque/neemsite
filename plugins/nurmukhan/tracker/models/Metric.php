@@ -35,4 +35,24 @@ class Metric extends Model
     public function getCategoryIdOptions(){
         return \Nurmukhan\Tracker\Models\Category::lists('name', 'id');
     }
+    public function getGraphData($start, $end)
+    {
+        $logs = $this->logs()
+            ->whereBetween('recorded_at', [$start . ' 00:00:00', $end . ' 23:59:59'])
+            ->orderBy('recorded_at', 'asc')
+            ->get();
+
+        return [
+            'label' => $this->name,
+            'data' => $logs->map(function($log) {
+                return [
+                    'x' => $log->recorded_at->toIso8601String(), 
+                    'y' => $log->value * (10 / $this->max_value)
+                ];
+            })->toArray(),
+            'borderColor' => $this->color,
+            'tension' => 0,
+            'yAxisID' => 'y'
+        ];
+    }
 }

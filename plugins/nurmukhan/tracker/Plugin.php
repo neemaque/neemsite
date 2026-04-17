@@ -50,10 +50,9 @@ class Plugin extends PluginBase
      */
     public function registerComponents()
     {
-        return []; // Remove this line to activate
 
         return [
-            'Nurmukhan\Tracker\Components\MyComponent' => 'myComponent',
+            'Nurmukhan\Tracker\Components\TrackerGraphComponent' => 'TrackerGraphComponent',
         ];
     }
 
