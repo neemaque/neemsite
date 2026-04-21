@@ -50,6 +50,7 @@ class Category extends Model
 
         return [
             'label' => $this->name . ' logs a day',
+            'hidden' => true,
             'data' => $dataPoints,
             'backgroundColor' => $this->color,
             'borderColor' => '#94a3b8',

@@ -44,6 +44,7 @@ class Metric extends Model
 
         return [
             'label' => "(" . $this->category->name . ") " . $this->name ,
+            'hidden' => true,
             'data' => $logs->map(function($log) {
                 return [
                     'x' => $log->recorded_at->toIso8601String(), 
