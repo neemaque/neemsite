@@ -82,9 +82,23 @@ class Plugin extends PluginBase
     {
 
         return [
-            'tracker' => [
-                'label'       => 'Tracker',
-                'url'         => Backend::url('nurmukhan/tracker/Categories'),
+            'tracker-categories' => [
+                'label'       => 'Tracker Categories',
+                'url'         => Backend::url('nurmukhan/tracker/categories'),
+                'icon'        => 'icon-leaf',
+                'permissions' => ['nurmukhan.tracker.*'],
+                'order'       => 500,
+            ],
+            'tracker-metrics' => [
+                'label'       => 'Tracker Metrics',
+                'url'         => Backend::url('nurmukhan/tracker/metrics'),
+                'icon'        => 'icon-leaf',
+                'permissions' => ['nurmukhan.tracker.*'],
+                'order'       => 500,
+            ],
+            'tracker-logs' => [
+                'label'       => 'Tracker Logs',
+                'url'         => Backend::url('nurmukhan/tracker/logs'),
                 'icon'        => 'icon-leaf',
                 'permissions' => ['nurmukhan.tracker.*'],
                 'order'       => 500,

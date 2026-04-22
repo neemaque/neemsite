@@ -8,3 +8,8 @@ fields:
         showSearch: true
         span: auto
         type: dropdown
+    recorded_at:
+        label: 'Recorded at'
+        span: auto
+        mode: datetime
+        type: datepicker
