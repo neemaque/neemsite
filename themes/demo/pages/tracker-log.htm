@@ -52,7 +52,7 @@ function onBulkLog() {
 
     \Flash::success('Morning routine saved!');
     
-    return Redirect::refresh();
+    return Redirect::to('tracker');
 }
 ?>
 ==
@@ -74,7 +74,7 @@ function onBulkLog() {
                        step="{{ metric.step_value|default(1) }}" 
                        value="0"
                        data-display-id="val-{{ metric.id }}"
-                       style="height: 4rem;">
+                       style="height: 4rem; width: 80%; margin-left:10%";>
                        
             </div>
             {% endfor %}
